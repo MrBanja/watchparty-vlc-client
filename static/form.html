@@ -1,0 +1,22 @@
+<form hx-post="/begin" hx-target="#content">
+    <div class="mb-3">
+        <label for="path" class="form-label">Path</label>
+        <input id="path" name="path" type="text" class="form-control" value="{{ .PathValue }}" {{ .State }}>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary" {{ .State }}>Submit</button>
+    </div>
+</form>
+{{ if .ToIgnoreOutput }}
+{{ else }}
+<div class="mt-4" id="output_content">
+    {{ if .Error}}
+    <div class="alert alert-warning" role="alert">
+        {{ .Error }}
+    </div>
+    {{ else }}
+    {{template "progress_container" .}}
+    {{ end }}
+</div>
+{{ end }}
+

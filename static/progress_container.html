@@ -1,0 +1,5 @@
+<div hx-trigger="DownloadDone" hx-get="/download/done" hx-target="#output_content">
+  <div hx-get="/download/progress" hx-trigger="every 600ms" hx-target="this" hx-swap="innerHTML">
+    {{template "progress_bar" .}}
+  </div>
+</div>

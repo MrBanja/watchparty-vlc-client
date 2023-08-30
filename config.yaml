@@ -1,0 +1,3 @@
+server_address: 116.203.141.18:8000
+server_address_o: 127.0.0.1:8002
+local_address: :8001

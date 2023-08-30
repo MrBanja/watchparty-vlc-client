@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<root>
+
+    <fullscreen>false</fullscreen>
+    <aspectratio>default</aspectratio>
+    <audiodelay>0</audiodelay>
+    <apiversion>3</apiversion>
+    <currentplid>67</currentplid>
+    <time>12</time>
+    <volume>256</volume>
+    <length>7868</length>
+    <random>false</random>
+    <audiofilters>
+        <filter_0></filter_0>
+    </audiofilters>
+    <rate>1</rate>
+    <videoeffects>
+        <hue>0</hue>
+        <saturation>1</saturation>
+        <contrast>1</contrast>
+        <brightness>1</brightness>
+        <gamma>1</gamma>
+    </videoeffects>
+    <state>paused</state>
+    <loop>false</loop>
+    <version>3.0.18 Vetinari</version>
+    <position>0.0016495233867317</position>
+    <repeat>false</repeat>
+    <subtitledelay>0</subtitledelay>
+    <equalizer></equalizer>
+    <information>
+        <category name="meta">
+            <info name='setting'>HAS_INDEX IS_INTERLEAVED</info>
+            <info name='filename'>Salinui.chueok.N.avi</info>
+            <info name='copyright'>rutracker.org</info>
+            <info name='artist'>zim2001</info>
+            <info name='Software'>VirtualDubMod 1.5.10.2 (build 2540/release)</info>
+        </category>
+        <category name='Stream 0'>
+            <info name='Chroma location'>Left</info>
+            <info name='Codec'>Xvid MPEG-4 Video (XVID)</info>
+            <info name='Frame rate'>23.975986</info>
+            <info name='Decoded format'>Planar 4:2:0 YUV</info>
+            <info name='Buffer dimensions'>720x384</info>
+            <info name='Orientation'>Top left</info>
+            <info name='Type'>Video</info>
+            <info name='Video resolution'>720x384</info>
+        </category>
+        <category name='Stream 1'>
+            <info name='Codec'>A52 Audio (aka AC3) (a52 )</info>
+            <info name='Channels'>Stereo</info>
+            <info name='Bits per sample'>32</info>
+            <info name='Sample rate'>48000 Hz</info>
+            <info name='Type'>Audio</info>
+        </category>
+        <category name='Stream 3'>
+            <info name='Codec'>Text subtitles with various tags (subt)</info>
+            <info name='Language'>N</info>
+            <info name='Type'>Subtitle</info>
+        </category>
+        <category name='Stream 2'>
+            <info name='Bitrate'>192 kb/s</info>
+            <info name='Codec'>A52 Audio (aka AC3) (a52 )</info>
+            <info name='Type'>Audio</info>
+            <info name='Sample rate'>48000 Hz</info>
+        </category>
+    </information>
+    <stats>
+        <lostabuffers>0</lostabuffers>
+        <readpackets>1691</readpackets>
+        <lostpictures>0</lostpictures>
+        <demuxreadbytes>2748127</demuxreadbytes>
+        <demuxbitrate>0.29224821925163</demuxbitrate>
+        <playedabuffers>439</playedabuffers>
+        <demuxcorrupted>0</demuxcorrupted>
+        <sendbitrate>0</sendbitrate>
+        <sentbytes>0</sentbytes>
+        <displayedpictures>396</displayedpictures>
+        <demuxreadpackets>0</demuxreadpackets>
+        <sentpackets>0</sentpackets>
+        <inputbitrate>0.29809284210205</inputbitrate>
+        <demuxdiscontinuity>0</demuxdiscontinuity>
+        <averagedemuxbitrate>0</averagedemuxbitrate>
+        <decodedvideo>649</decodedvideo>
+        <averageinputbitrate>0</averageinputbitrate>
+        <readbytes>12847014</readbytes>
+        <decodedaudio>879</decodedaudio>
+    </stats>
+</root>
