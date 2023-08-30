@@ -1,15 +1,18 @@
-module vlc
+module github.com/mrbanja/watchparty-vlc-client
 
-go 1.20
+go 1.21
 
 require (
 	github.com/CedArctic/go-vlc-ctrl v0.5.0
 	github.com/anacrolix/torrent v1.52.4
-	github.com/fasthttp/websocket v1.5.4
+	github.com/bufbuild/connect-go v1.10.0
 	github.com/gofiber/contrib/fiberzap v1.0.2
 	github.com/gofiber/fiber/v2 v2.48.0
 	github.com/gofiber/template/html/v2 v2.0.5
+	github.com/mrbanja/watchparty-proto v0.0.0-20230830135214-ea1afc70081a
+	github.com/rs/xid v1.5.0
 	go.uber.org/zap v1.25.0
+	golang.org/x/net v0.8.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -76,8 +79,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rs/dnscache v0.0.0-20211102005908-e0241e321417 // indirect
-	github.com/rs/xid v1.5.0 // indirect
-	github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/tidwall/btree v1.6.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
@@ -89,8 +90,9 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
-	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
+	google.golang.org/protobuf v1.31.0 // indirect
 )

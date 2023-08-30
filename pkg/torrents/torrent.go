@@ -10,7 +10,7 @@ import (
 	"github.com/anacrolix/torrent"
 	"go.uber.org/zap"
 
-	"vlc/ui"
+	"github.com/mrbanja/watchparty-vlc-client/ui"
 )
 
 type Client struct {

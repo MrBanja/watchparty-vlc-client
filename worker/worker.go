@@ -5,8 +5,9 @@ import (
 	"path/filepath"
 
 	"go.uber.org/zap"
-	"vlc/pkg/controller"
-	"vlc/ui"
+
+	"github.com/mrbanja/watchparty-vlc-client/pkg/controller"
+	"github.com/mrbanja/watchparty-vlc-client/ui"
 )
 
 type Worker struct {

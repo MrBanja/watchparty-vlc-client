@@ -5,20 +5,21 @@ import (
 	"sync"
 	"time"
 
-	"vlc/worker"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/web"
+
+	"github.com/mrbanja/watchparty-vlc-client/worker"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 
-	"vlc/pkg/ws"
-	"vlc/ui"
+	"github.com/mrbanja/watchparty-vlc-client/ui"
 )
 
 type API struct {
 	worker     *worker.Worker
 	progress   ui.Progress
 	serverAddr string
-	wsClient   *ws.Client
+	wsClient   *web.Client
 
 	mu               sync.Mutex
 	isServiceRunning bool
@@ -28,7 +29,7 @@ type API struct {
 
 func New(
 	worker *worker.Worker,
-	wsClient *ws.Client,
+	wsClient *web.Client,
 	serverAddr string,
 	progress ui.Progress,
 	logger *zap.Logger,

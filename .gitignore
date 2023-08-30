@@ -13,3 +13,4 @@ go.work
 
 Makefile
 builds
+config.yaml

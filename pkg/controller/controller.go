@@ -3,13 +3,12 @@ package controller
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 
+	"github.com/mrbanja/watchparty-vlc-client/pkg/web"
+
+	"github.com/mrbanja/watchparty-vlc-client/pkg/torrents"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/vlc"
 	"go.uber.org/zap"
-	"vlc/pkg/torrents"
-	"vlc/pkg/vlc"
-	"vlc/pkg/ws"
 )
 
 type Config struct {
@@ -18,14 +17,14 @@ type Config struct {
 
 type Controller struct {
 	vlc           *vlc.VLC
-	webClient     *ws.Client
+	webClient     *web.Client
 	torrentClient *torrents.Client
 	logger        *zap.Logger
 }
 
 func New(
 	vlc *vlc.VLC,
-	webClient *ws.Client,
+	webClient *web.Client,
 	torrentClient *torrents.Client,
 	logger *zap.Logger,
 ) *Controller {
@@ -38,6 +37,7 @@ func New(
 }
 
 func (c *Controller) EnforceLogger(logger *zap.Logger) {
+	logger = logger.With(zap.String("ClientID", c.webClient.ID))
 	c.webClient.EnforceLogger(logger)
 	c.torrentClient.EnforceLogger(logger)
 	c.vlc.EnforceLogger(logger)
@@ -45,7 +45,7 @@ func (c *Controller) EnforceLogger(logger *zap.Logger) {
 }
 
 func (c *Controller) Run(ctx context.Context, cfg Config) error {
-	magnet, err := c.fetchMagnet(ctx)
+	magnet, err := c.webClient.GetMagnet(ctx)
 	if err != nil {
 		return err
 	}
@@ -86,15 +86,15 @@ func (c *Controller) Serve(ctx context.Context) error {
 		case r, ok := <-resp:
 			if !ok {
 				c.logger.Warn("Channel closed. Stopping controller")
-				return fmt.Errorf("websocket closed the channel")
+				return fmt.Errorf("web closed the channel")
 			}
 			c.logger.Info("Received status change", zap.Any("New status", r))
 			switch r.Status {
-			case ws.Play:
+			case web.Play:
 				if err := c.vlc.PlayBy(vlc.ByNet); err != nil {
 					return err
 				}
-			case ws.Pause:
+			case web.Pause:
 				if err := c.vlc.PauseBy(vlc.ByNet); err != nil {
 					return err
 				}
@@ -109,37 +109,18 @@ func (c *Controller) Serve(ctx context.Context) error {
 			}
 			switch vlc.GetPlayingState(s.State) {
 			case vlc.StateStopped:
-				return c.webClient.Send(ws.Message{Time: 0, Status: ws.Pause})
+				return c.webClient.Send(web.Message{Time: 0, Status: web.Pause})
 			case vlc.StatePlaying:
-				if err := c.webClient.Send(ws.Message{Time: int(s.Time), Status: ws.Play}); err != nil {
+				if err := c.webClient.Send(web.Message{Time: int(s.Time), Status: web.Play}); err != nil {
 					return err
 				}
 				continue
 			case vlc.StatePaused:
-				if err := c.webClient.Send(ws.Message{Time: int(s.Time), Status: ws.Pause}); err != nil {
+				if err := c.webClient.Send(web.Message{Time: int(s.Time), Status: web.Pause}); err != nil {
 					return err
 				}
 				continue
 			}
 		}
 	}
-}
-
-func (c *Controller) fetchMagnet(ctx context.Context) (string, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://116.203.141.18:8000/magnet", nil)
-	if err != nil {
-		return "", err
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	b, err := io.ReadAll(resp.Body)
-
-	return string(b), nil
 }

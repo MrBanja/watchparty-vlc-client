@@ -5,17 +5,16 @@ import (
 	"fmt"
 	"time"
 
-	"vlc/worker"
-
-	"vlc/api"
-	"vlc/app"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/web"
 
 	"go.uber.org/zap"
 
-	"vlc/pkg/controller"
-	"vlc/pkg/torrents"
-	"vlc/pkg/vlc"
-	"vlc/pkg/ws"
+	"github.com/mrbanja/watchparty-vlc-client/api"
+	"github.com/mrbanja/watchparty-vlc-client/app"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/controller"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/torrents"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/vlc"
+	"github.com/mrbanja/watchparty-vlc-client/worker"
 )
 
 type ProgressBar struct {
@@ -65,8 +64,8 @@ func main() {
 
 	wCtx, wCancel := context.WithTimeout(ctx, 10*time.Second)
 	defer wCancel()
-	webClient := ws.New(options.ServerAddress, logger)
-	webClient.MustConnect(wCtx)
+	webClient := web.New(options.ServerAddress, logger)
+	webClient.JoinRoom(wCtx)
 	vlcClient := vlc.MustNew(ctx, logger)
 
 	contr := controller.New(

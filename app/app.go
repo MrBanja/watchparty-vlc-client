@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 
-	"vlc/api"
+	"github.com/mrbanja/watchparty-vlc-client/api"
 )
 
 type Options struct {
