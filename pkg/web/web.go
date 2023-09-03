@@ -24,7 +24,7 @@ func New(serverAddr string, logger *zap.Logger) *Client {
 	hc := http_client.New()
 	client := protoconnect.NewPartyServiceClient(hc, serverAddr)
 	ID := xid.New().String()
-	defer logger.Info("Web Client created", zap.String("ID", ID))
+	defer logger.Info("Web Client created", zap.String("ID", ID), zap.String("Addr", serverAddr))
 	return &Client{
 		ID:     ID,
 		client: client,
@@ -32,8 +32,16 @@ func New(serverAddr string, logger *zap.Logger) *Client {
 	}
 }
 
-func (c *Client) JoinRoom(ctx context.Context) {
+func (c *Client) MustJoinRoom(ctx context.Context) {
+	c.logger.Info("Joined room")
 	c.conn = c.client.JoinRoom(ctx)
+	c.conn.RequestHeader().Set("X-Client-Id", c.ID)
+	err := c.conn.Send(&protocol.RoomRequest{
+		Data: &protocol.RoomRequest_Connect{Connect: &protocol.Connect{RoomName: "party"}},
+	})
+	if err != nil {
+		c.logger.Fatal("Error while joining the room", zap.Error(err))
+	}
 }
 
 func (c *Client) GetMagnet(ctx context.Context) (string, error) {
@@ -50,16 +58,8 @@ func (c *Client) EnforceLogger(logger *zap.Logger) {
 
 func (c *Client) Listen(ctx context.Context) (<-chan Message, error) {
 	if c.conn == nil {
-		c.JoinRoom(ctx)
+		c.MustJoinRoom(ctx)
 	}
-
-	err := c.conn.Send(&protocol.RoomRequest{
-		Data: &protocol.RoomRequest_Connect{Connect: &protocol.Connect{RoomName: "party"}},
-	})
-	if err != nil {
-		return nil, err
-	}
-
 	respCh := make(chan Message)
 	go func() {
 		defer func() {

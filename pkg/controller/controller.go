@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mrbanja/watchparty-vlc-client/pkg/web"
-
 	"github.com/mrbanja/watchparty-vlc-client/pkg/torrents"
 	"github.com/mrbanja/watchparty-vlc-client/pkg/vlc"
+	"github.com/mrbanja/watchparty-vlc-client/pkg/web"
 	"go.uber.org/zap"
 )
 
@@ -64,7 +63,7 @@ func (c *Controller) Run(ctx context.Context, cfg Config) error {
 }
 
 func (c *Controller) Serve(ctx context.Context) error {
-	resp, err := c.webClient.Listen(ctx)
+	webResp, err := c.webClient.Listen(ctx)
 	if err != nil {
 		return err
 	}
@@ -83,7 +82,7 @@ func (c *Controller) Serve(ctx context.Context) error {
 		case <-ctx.Done():
 			c.logger.Info("Context DONE received. Stopping controller")
 			return nil
-		case r, ok := <-resp:
+		case r, ok := <-webResp:
 			if !ok {
 				c.logger.Warn("Channel closed. Stopping controller")
 				return fmt.Errorf("web closed the channel")
@@ -109,7 +108,10 @@ func (c *Controller) Serve(ctx context.Context) error {
 			}
 			switch vlc.GetPlayingState(s.State) {
 			case vlc.StateStopped:
-				return c.webClient.Send(web.Message{Time: 0, Status: web.Pause})
+				if err := c.webClient.Send(web.Message{Time: 0, Status: web.Pause}); err != nil {
+					return err
+				}
+				continue
 			case vlc.StatePlaying:
 				if err := c.webClient.Send(web.Message{Time: int(s.Time), Status: web.Play}); err != nil {
 					return err

@@ -62,10 +62,10 @@ func main() {
 
 	options := app.MustLoadOptions(logger)
 
-	wCtx, wCancel := context.WithTimeout(ctx, 10*time.Second)
+	wCtx, wCancel := context.WithCancel(ctx)
 	defer wCancel()
 	webClient := web.New(options.ServerAddress, logger)
-	webClient.JoinRoom(wCtx)
+	webClient.MustJoinRoom(wCtx)
 	vlcClient := vlc.MustNew(ctx, logger)
 
 	contr := controller.New(
@@ -75,7 +75,7 @@ func main() {
 		logger,
 	)
 
-	srv := api.New(worker.New(contr, progress), webClient, options.ServerAddress, progress, logger)
+	srv := api.MustNew(worker.New(contr, progress), webClient, options.ServerAddress, progress, logger)
 
 	if err := app.Run(srv, options, logger); err != nil {
 		logger.Error("Error while listen", zap.Error(err))

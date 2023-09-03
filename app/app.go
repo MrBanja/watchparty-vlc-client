@@ -1,11 +1,17 @@
 package app
 
 import (
+	"context"
+	"net"
+	"net/http"
 	"os"
+	"time"
 
-	"github.com/gofiber/contrib/fiberzap"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/template/html/v2"
+	"github.com/mrbanja/watchparty-vlc-client/logging"
+
+	"github.com/gorilla/mux"
+	"github.com/mrbanja/watchparty-vlc-client/tools/http_server"
+
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 
@@ -29,20 +35,32 @@ func MustLoadOptions(logger *zap.Logger) Options {
 	return o
 }
 
-func Run(srv *api.API, o Options, logger *zap.Logger) error {
-	engine := html.New("./static", ".html")
+func Run(srv *api.API, opt Options, logger *zap.Logger) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	app := fiber.New(fiber.Config{
-		Views: engine,
-	})
-	app.Use(fiberzap.New(fiberzap.Config{
-		Logger: logger,
-	}))
+	handler := mux.NewRouter()
+	handler.HandleFunc("/", srv.Index).Methods(http.MethodGet)
+	handler.HandleFunc("/download/progress", srv.DownloadProgress).Methods(http.MethodGet)
+	handler.HandleFunc("/download/done", srv.DownloadDone).Methods(http.MethodGet)
+	handler.HandleFunc("/begin", srv.Begin).Methods(http.MethodPost)
 
-	app.Get("/", srv.Index)
-	app.Get("/download/progress", srv.DownloadProgress)
-	app.Get("/download/done", srv.DownloadDone)
-	app.Post("/begin", srv.Begin)
+	handler.Use(logging.Middleware(logger))
 
-	return app.Listen(o.LocalAddress)
+	server := &http.Server{
+		Addr: opt.LocalAddress,
+		BaseContext: func(listener net.Listener) context.Context {
+			return ctx
+		},
+		Handler: handler,
+	}
+
+	logger.Info("[*] Http server started", zap.String("Pub Addr", opt.LocalAddress), zap.String("Local Addr", opt.LocalAddress))
+	if err := http_server.Serve(ctx, server, 10*time.Second, func(server *http.Server) error {
+		return server.ListenAndServe()
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
